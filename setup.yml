@@ -1,0 +1,22 @@
+---
+- hosts: all
+  user: zdun
+  sudo: yes
+  tasks:
+    - name: Install essentials
+      apt: pkg={{ item }} state=latest update_cache=yes
+      with_items:
+        - git
+        - python-software-properties
+
+    - name: Add Oracle Java PPA
+      apt_repository: repo='ppa:webupd8team/java'
+
+    - name: Accept Oracla Java license
+      shell: echo debconf shared/accepted-oracle-license-v1-1 select true | debconf-set-selections
+
+    - name: Install Oracle Java 8 and Maven
+      apt: pkg=oracle-java8-installer update_cache=yes state=installed
+
+    - name: Set Oracle Java 8 JAVA_HOME environment variable
+      apt: pkg=oracle-java8-set-default state=latest
